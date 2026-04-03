@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Incentive Calculator</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #f4f6f8;
+      padding: 30px;
+    }
+    .container {
+      max-width: 500px;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin: auto;
+    }
+    h2 {
+      text-align: center;
+    }
+
+    /* PRODUCT OPTIONS */
+    .options {
+      display: grid;
+      gap: 10px;
+      margin: 10px 0;
+    }
+    .option {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .option input {
+      display: none;
+    }
+    .option.selected {
+      background: #007bff;
+      color: white;
+      border-color: #007bff;
+    }
+
+    select, input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+    }
+
+    .result {
+      font-size: 18px;
+      font-weight: bold;
+      color: green;
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .logo {
+      display: block;
+      margin: 0 auto 15px auto;
+      max-width: 180px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <img src="logo.png" alt="Company Logo" class="logo">
+  <h2>Incentive Calculator</h2>
+
+  <label>Product Type</label>
+  <div class="options" id="productOptions">
+    <label class="option">
+      <input type="radio" name="product" value="mf"> Mutual Funds
+    </label>
+    <label class="option">
+      <input type="radio" name="product" value="insurance"> Term Insurance
+    </label>
+    <label class="option">
+      <input type="radio" name="product" value="pms"> PMS / AIF
+    </label>
+    <label class="option">
+      <input type="radio" name="product" value="fd"> Corporate FD / Bonds / Debentures
+    </label>
+  </div>
+
+  <label>Frequency</label>
+  <select id="frequency" onchange="updateLabel()">
+    <option value="yearly">Yearly</option>
+    <option value="semi">Semi-Yearly</option>
+    <option value="monthly">Monthly</option>
+  </select>
+
+  <label id="amountLabel">First Year Premium</label>
+  <input type="number" id="amount" placeholder="Enter amount">
+
+  <button onclick="calculate()">Calculate Incentive</button>
+
+  <div class="result" id="result"></div>
+</div>
+
+<script>
+const options = document.querySelectorAll('.option');
+
+options.forEach(option => {
+  option.addEventListener('click', () => {
+    options.forEach(o => o.classList.remove('selected'));
+    option.classList.add('selected');
+    option.querySelector('input').checked = true;
+  });
+});
+
+function updateLabel() {
+  const freq = document.getElementById("frequency").value;
+  const label = document.getElementById("amountLabel");
+
+  if (freq === "yearly") {
+    label.innerText = "First Year Premium";
+  } else if (freq === "semi") {
+    label.innerText = "First Installment";
+  } else {
+    label.innerText = "First 2 Months Value";
+  }
+}
+
+function calculate() {
+  const product = document.querySelector('input[name="product"]:checked');
+  const freq = document.getElementById("frequency").value;
+  const amount = parseFloat(document.getElementById("amount").value);
+
+  if (!product) {
+    alert("Please select a product");
+    return;
+  }
+
+  if (!amount || amount <= 0) {
+    alert("Please enter a valid amount");
+    return;
+  }
+
+  let incentive = 0;
+  const productValue = product.value;
+
+  if (productValue === "mf") {
+    incentive = amount * 0.001;
+  } else if (productValue === "insurance") {
+    incentive = amount * 0.15;
+  } else if (productValue === "pms") {
+    incentive = amount * 0.005;
+  } else if (productValue === "fd") {
+    incentive = amount * 0.002;
+  }
+
+  document.getElementById("result").innerText =
+    "Incentive: ₹ " + incentive.toFixed(2);
+}
+</script>
+
+</body>
+</html>
